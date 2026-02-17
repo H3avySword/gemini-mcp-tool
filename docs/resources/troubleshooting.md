@@ -210,7 +210,7 @@ claude mcp list
 **Root cause**: Model-specific bug in older `gemini-2.5-pro` model
 
 **Working models**:
-- ✅ `gemini-3-pro` - Recommended default
+- ✅ `gemini-3-pro-preview` - Recommended default
 - ✅ `gemini-3-flash` - Works perfectly, faster responses
 
 **Solutions**:
@@ -222,7 +222,7 @@ claude mcp list
 /gemini-cli:analyze -m gemini-3-flash @file1.js @file2.js
 
 # Pro model for highest quality
-/gemini-cli:analyze -m gemini-3-pro "detailed analysis"
+/gemini-cli:analyze -m gemini-3-pro-preview "detailed analysis"
 ```
 
 ## Configuration Issues
@@ -295,10 +295,10 @@ Enable debug logging:
 | **Use Case** | **Recommended Model** | **Reason** |
 |--------------|----------------------|------------|
 | File analysis | `gemini-3-flash` | Faster, stable responses |
-| Code review | `gemini-3-pro` | Higher quality analysis |
+| Code review | `gemini-3-pro-preview` | Higher quality analysis |
 | Large codebase | `gemini-3-flash` | Better timeout handling |
 | Quick questions | `gemini-3-flash` | Fast responses |
-| Complex reasoning | `gemini-3-pro` | Best quality |
+| Complex reasoning | `gemini-3-pro-preview` | Best quality |
 
 ### How to Set the Model
 
@@ -313,7 +313,7 @@ Enable debug logging:
 
 **Globally via Gemini CLI config**:
 ```bash
-gemini config set model gemini-3-pro
+gemini config set model gemini-3-pro-preview
 ```
 
 ## Quick Fixes

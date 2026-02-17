@@ -21,10 +21,10 @@ This is a simple Model Context Protocol (MCP) server that allows AI assistants t
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@jamubc/gemini-mcp-tool/badge" alt="Gemini Tool MCP server" />
 </a>
 
-## TLDR: [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#) + [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-886FBF?logo=googlegemini&logoColor=fff)](#)
+## TLDR: [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#) + [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-886FBF?logo=googlegemini&logoColor=fff)](#) + [![OpenAI](https://img.shields.io/badge/Codex-412991?logo=openai&logoColor=fff)](#) + [![OpenCode](https://img.shields.io/badge/OpenCode-000?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiPjxwb2x5bGluZSBwb2ludHM9IjE2IDMgMjEgMyAyMSA4Ii8+PGxpbmUgeDE9IjQiIHkxPSIyMCIgeDI9IjIxIiB5Mj0iMyIvPjxwb2x5bGluZSBwb2ludHM9IjIxIDE2IDIxIDIxIDE2IDIxIi8+PGxpbmUgeDE9IjE1IiB5MT0iMTUiIHgyPSIyMSIgeTI9IjIxIi8+PGxpbmUgeDE9IjQiIHkxPSI0IiB4Mj0iOSIgeTI9IjkiLz48L3N2Zz4=)](#)
 
 
-**Goal**: Use Gemini's powerful analysis capabilities directly in Claude Code to save tokens and analyze large files.
+**Goal**: Use Gemini's powerful analysis capabilities directly in Claude Code, Codex, OpenCode, or any MCP-compatible client to save tokens and analyze large files.
 
 ## Prerequisites
 
@@ -84,7 +84,20 @@ Add this configuration to your Claude Desktop config file:
 
 ### With Custom Default Model
 
-You can set a default model via environment variable to avoid specifying it in every request:
+You can set a default model via the `--model` CLI argument or environment variable:
+
+```json
+{
+  "mcpServers": {
+    "gemini-cli": {
+      "command": "npx",
+      "args": ["-y", "gemini-mcp-tool", "--model", "gemini-3-flash"]
+    }
+  }
+}
+```
+
+Or via environment variable:
 
 ```json
 {
@@ -101,7 +114,7 @@ You can set a default model via environment variable to avoid specifying it in e
 ```
 
 Supported environment variables:
-- `GEMINI_DEFAULT_MODEL` - Sets the default Gemini model (e.g., `gemini-3-pro`, `gemini-3-flash`)
+- `GEMINI_DEFAULT_MODEL` - Sets the default Gemini model (e.g., `gemini-3-pro-preview`, `gemini-3-flash`)
 - `DEFAULT_MODEL` - Alternative name for the same setting
 
 ### For Global Installation
@@ -118,12 +131,45 @@ If you installed globally, use this configuration instead:
 }
 ```
 
+### For OpenAI Codex
+
+Add to your Codex config file (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.gemini-cli]
+type = "stdio"
+command = "npx"
+args = ["-y", "gemini-mcp-tool", "--model", "gemini-3-pro-preview"]
+```
+
+### For OpenCode
+
+Add to your OpenCode config file (`~/.config/opencode/opencode.json`):
+
+```json
+{
+  "mcp": {
+    "gemini-cli": {
+      "command": ["npx", "-y", "gemini-mcp-tool", "--model", "gemini-3-pro-preview"],
+      "enabled": true,
+      "type": "local"
+    }
+  }
+}
+```
+
+### Windows Compatibility
+
+This tool fully supports Windows. The MCP server uses `shell: true` when spawning the Gemini CLI process, ensuring `.cmd` files and PATH resolution work correctly. No additional configuration is needed on Windows.
+
 **Configuration File Locations:**
 
 - **Claude Desktop**:
   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
   - **Linux**: `~/.config/claude/claude_desktop_config.json`
+- **Codex**: `~/.codex/config.toml`
+- **OpenCode**: `~/.config/opencode/opencode.json`
 
 After updating the configuration, restart your terminal session.
 
@@ -161,7 +207,7 @@ These tools are designed to be used by the AI assistant.
 
 - **`ask-gemini`**: Asks Google Gemini for its perspective. Can be used for general questions or complex analysis of files.
   - **`prompt`** (required): The analysis request. Use the `@` syntax to include file or directory references (e.g., `@src/main.js explain this code`) or ask general questions (e.g., `Please use a web search to find the latest news stories`).
-  - **`model`** (optional): The Gemini model to use. Defaults to `gemini-3-pro`. You can specify alternative models like `gemini-3-flash` for faster responses.
+  - **`model`** (optional): The Gemini model to use. Defaults to `gemini-3-pro-preview`. You can specify alternative models like `gemini-3-flash` for faster responses.
   - **`sandbox`** (optional): Set to `true` to run in sandbox mode for safe code execution.
 - **`sandbox-test`**: Safely executes code or commands in Gemini's sandbox environment. Always runs in sandbox mode.
   - **`prompt`** (required): Code testing request (e.g., `Create and run a Python script that...` or `@script.py Run this safely`).

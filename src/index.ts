@@ -17,15 +17,30 @@ import {
   CallToolResult,
 } from "@modelcontextprotocol/sdk/types.js";
 import { Logger } from "./utils/logger.js";
-import { PROTOCOL, ToolArguments } from "./constants.js";
+import { PROTOCOL, MODELS, ToolArguments } from "./constants.js";
 
-import { 
-  getToolDefinitions, 
-  getPromptDefinitions, 
-  executeTool, 
-  toolExists, 
-  getPromptMessage 
+import {
+  getToolDefinitions,
+  getPromptDefinitions,
+  executeTool,
+  toolExists,
+  getPromptMessage
 } from "./tools/index.js";
+
+// Parse CLI arguments (e.g., --model gemini-3-flash)
+function parseCliArgs() {
+  const args = process.argv.slice(2);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--model' && i + 1 < args.length) {
+      const model = args[i + 1];
+      if (!process.env.GEMINI_DEFAULT_MODEL && !process.env.DEFAULT_MODEL) {
+        process.env.GEMINI_DEFAULT_MODEL = model;
+      }
+      Logger.debug(`CLI --model flag: ${model}`);
+    }
+  }
+}
+parseCliArgs();
 
 const server = new Server(
   {
